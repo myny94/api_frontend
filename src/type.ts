@@ -1,4 +1,20 @@
+export type date_data = {
+    chats_from_autosuggest_count: number
+    chats_from_user_count: number
+    chats_from_visitor_count: number
+    conversation_count: number
+    date: string
+    missed_chat_count: number
+    user_message_count: number
+    visitor_message_count: number
+    visitors_affected_by_chat_count: number
+    visitors_autosuggested_count: number
+    visitors_with_chat_count: number
+    visitors_with_conversation_count: number
+}
+
 export type response = {
+    by_date: date_data[]
     end_date: string
     room_id: string
     start_date: string

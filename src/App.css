@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  font-family: sans-serif;
 }
 
 .App-logo {
@@ -22,6 +23,47 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.inputBoxes {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.dateBoxes {
+  display: flex;
+}
+
+.dateBox {
+  margin: 5%;
+  width: 150px;
+}
+
+.inputBox {
+  border:1px solid gainsboro;
+  border-radius: 10%;
+  padding: 10px;
+}
+
+.displayBoxes {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 5%;
+}
+
+.boxNumber {
+  font-size: 50px;
+}
+
+.boxText {
+  font-size: 30px;
+}
+
+.conversationCount, .userMessageCount, .visitorMessageCount {
+  border:1px solid gainsboro;
+  border-radius: 10%;
 }
 
 .App-link {
