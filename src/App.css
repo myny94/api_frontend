@@ -46,11 +46,21 @@
   padding: 10px;
 }
 
+.tokenBox {
+  border:1px solid gainsboro;
+  border-radius: 10%;
+  padding: 10px;
+  height: 40px;
+  margin-top: 40px;
+  margin-right: 10px;
+}
+
 .displayBoxes {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  margin: 5%;
+  margin-bottom: 50px;
+  margin-top: 30px;
 }
 
 .boxNumber {
@@ -58,12 +68,14 @@
 }
 
 .boxText {
-  font-size: 30px;
+  font-size: 20px;
+  font-weight: bold;
 }
 
-.conversationCount, .userMessageCount, .visitorMessageCount {
+.displayBox {
   border:1px solid gainsboro;
   border-radius: 10%;
+  padding: 15px;
 }
 
 .App-link {

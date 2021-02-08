@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Calendar from "react-calendar";
 import logo from "./logo.svg";
 import "react-calendar/dist/Calendar.css";
@@ -9,7 +9,8 @@ import "bootstrap/dist/css/bootstrap.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import userImage from './images/user.svg'
+import userImage from "./images/user.svg";
+import DatePicker from 'react-date-picker';
 
 const columns = [
   {
@@ -34,24 +35,24 @@ const columns = [
 function App() {
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
-  const [value, onChange] = useState(new Date());
   const [token, setToken] = useState<string>("");
   const [response, setResponse] = useState<response>();
 
   useEffect(() => {
     fetch(
-      `https://api.giosg.com/api/reporting/v1/rooms/84e0fefa-5675-11e7-a349-00163efdd8db/chat-stats/daily/
-      ?start_date=${formatDate(startDate)}&end_date=${formatDate(endDate)}`,
+      `https://api.giosg.com/api/reporting/v1/rooms/84e0fefa-5675-11e7-a349-00163efdd8db/chat-stats/daily/?start_date=${formatDate(
+        startDate
+      )}&end_date=${formatDate(endDate)}`,
       {
         method: "GET",
         headers: {
-          Authorization: token ?? "",
+          Authorization: token,
         },
       }
     )
       .then((response) => response.json())
       .then((data) => setResponse(data));
-  }, [startDate, endDate]);
+  }, [startDate, endDate, token]);
 
   return (
     <div className="App">
@@ -68,27 +69,31 @@ function App() {
       />
       <div className="inputBoxes">
         <div className="dateBoxes">
-            <div className="dateBox">
-                <div className="inputText">Start date</div>
-                <div className="inputBox">{formatDate(startDate)}</div>    
-            </div>
-            <div className="dateBox">
-                <div className="inputText">End date</div>
-                <div className="inputBox">{formatDate(endDate)}</div>    
-            </div>
+          <div className="dateBox">
+            <div className="inputText">Start date</div>
+            <div className="inputBox">{formatDate(startDate)}</div>
+          </div>
+          <div className="dateBox">
+            <div className="inputText">End date</div>
+            <div className="inputBox">{formatDate(endDate)}</div>
+          </div>
         </div>
-        <input className="tokenBox" placeholder="Access token" onChange={event => setToken(event.target.value)}></input>    
+        <input
+          className="tokenBox"
+          placeholder="Access token"
+          onChange={(event) => setToken(event.target.value)}
+        ></input>
       </div>
       <div className="displayBoxes">
-        <div className="conversationCount">
+        <div className="displayBox">
           <div className="boxNumber">{response?.total_conversation_count}</div>
           <div className="boxText">Total conversation count</div>
         </div>
-        <div className="userMessageCount">
+        <div className="displayBox">
           <div className="boxNumber">{response?.total_user_message_count}</div>
           <div className="boxText">Total user message count</div>
         </div>
-        <div className="visitorMessageCount">
+        <div className="displayBox">
           <div className="boxNumber">
             {response?.total_visitor_message_count}
           </div>
@@ -96,7 +101,8 @@ function App() {
         </div>
       </div>
 
-      {console.log(response)}
+      {console.log("response", response)}
+      {console.log("token", token)}
       {response && (
         <BootstrapTable
           bootstrap4
