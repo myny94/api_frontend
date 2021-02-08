@@ -1,6 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-import Calendar from "react-calendar";
-import logo from "./logo.svg";
+import { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import "./App.css";
 import { response } from "./type";
@@ -9,8 +7,12 @@ import "bootstrap/dist/css/bootstrap.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import { DateRangePicker } from "react-dates";
+import "react-dates/initialize";
+import "react-dates/lib/css/_datepicker.css";
+import moment from "moment";
 import userImage from "./images/user.svg";
-import DatePicker from 'react-date-picker';
+import graphImage from "./images/graph.svg";
 
 const columns = [
   {
@@ -33,56 +35,68 @@ const columns = [
 ];
 
 function App() {
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
-  const [token, setToken] = useState<string>("");
+  const [startDate, setStartDate] = useState<moment.Moment | null>(moment('01/05/2017', 'DD/MM/YYYY'));
+  const [endDate, setEndDate] = useState<moment.Moment | null>(moment('01/05/2017', 'DD/MM/YYYY'));
+  const [token, setToken] = useState<string | undefined>();
   const [response, setResponse] = useState<response>();
+  const [focusedInput, setFocusedInput] = useState<
+    "startDate" | "endDate" | null
+  >("startDate");
 
   useEffect(() => {
-    fetch(
-      `https://api.giosg.com/api/reporting/v1/rooms/84e0fefa-5675-11e7-a349-00163efdd8db/chat-stats/daily/?start_date=${formatDate(
-        startDate
-      )}&end_date=${formatDate(endDate)}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: token,
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => setResponse(data));
+    if (startDate && endDate && token) {
+      fetch(
+        `https://api.giosg.com/api/reporting/v1/rooms/84e0fefa-5675-11e7-a349-00163efdd8db/chat-stats/daily/?start_date=${formatDate(
+          startDate.toDate()
+        )}&end_date=${formatDate(endDate.toDate())}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => setResponse(data));
+    }
   }, [startDate, endDate, token]);
 
   return (
     <div className="App">
-      <Calendar
-        onChange={(dates) => {
-          if (Array.isArray(dates)) {
-            setStartDate(dates[0]);
-            setEndDate(dates[1]);
-          }
-        }}
-        value={[startDate, endDate]}
-        selectRange={true}
-        defaultActiveStartDate={new Date(2017, 4, 1)}
-      />
       <div className="inputBoxes">
-        <div className="dateBoxes">
-          <div className="dateBox">
-            <div className="inputText">Start date</div>
-            <div className="inputBox">{formatDate(startDate)}</div>
-          </div>
-          <div className="dateBox">
-            <div className="inputText">End date</div>
-            <div className="inputBox">{formatDate(endDate)}</div>
-          </div>
+        <div className="dateBox">
+          <div className="inputText">Pick date range</div>
+          <DateRangePicker
+            startDate={startDate}
+            startDateId="start_date"
+            endDate={endDate}
+            endDateId="end_date"
+            focusedInput={focusedInput}
+            onFocusChange={(x) => setFocusedInput(x)}
+            displayFormat={"YYYY-MM-DD"}
+            onDatesChange={(dates) => {
+              setStartDate(dates.startDate);
+              setEndDate(dates.endDate);
+            }}
+            startDateAriaLabel={"start date"}
+            endDateAriaLabel={"end date"}
+            orientation={"horizontal"}
+            keepOpenOnDateSelect={false}
+            minDate={moment('01/01/1999', 'DD/MM/YYYY')}
+            isOutsideRange={() => false}
+          />
         </div>
-        <input
-          className="tokenBox"
-          placeholder="Access token"
-          onChange={(event) => setToken(event.target.value)}
-        ></input>
+        <div className="tokenBox">
+            <div className="tokenImage">
+                <img alt="image" src={userImage}/>
+            </div>
+            <input
+            className="tokenInput"
+            placeholder="Access token"
+            onChange={(event) => setToken(event.target.value)}
+            ></input>
+        </div>
+        
       </div>
       <div className="displayBoxes">
         <div className="displayBox">
