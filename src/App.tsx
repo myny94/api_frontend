@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import "react-calendar/dist/Calendar.css";
 import "./App.css";
-import { response } from "./type";
+import { response, date_data } from "./type";
 import { formatDate } from "./helper";
 import "bootstrap/dist/css/bootstrap.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
@@ -13,6 +13,8 @@ import "react-dates/lib/css/_datepicker.css";
 import moment from "moment";
 import userImage from "./images/user.svg";
 import graphImage from "./images/graph.svg";
+import * as chartjs from "chart.js";
+import { Line, ChartData } from "react-chartjs-2";
 
 const columns = [
   {
@@ -34,9 +36,86 @@ const columns = [
   },
 ];
 
+const colors = [
+    "#3366cc",
+    "#dc3912",
+    "#ff9900",
+    "#109618",
+    "#990099",
+    "#0099c6",
+    "#dd4477",
+    "#66aa00",
+    "#b82e2e",
+    "#316395",
+    "#994499",
+    "#22aa99",
+    "#aaaa11",
+    "#6633cc",
+    "#e67300",
+    "#8b0707",
+    "#651067",
+    "#329262",
+    "#5574a6",
+    "#3b3eac",
+    "#b77322",
+    "#16d620",
+    "#b91383",
+    "#f4359e",
+    "#9c5935",
+    "#a9c413",
+    "#2a778d",
+    "#668d1c",
+    "#bea413",
+    "#0c5922",
+    "#743411",
+];
+
+function responseToLineData(response: response): ChartData<chartjs.ChartData> {
+  const datasets = [
+    {
+      label: "Chats from autosuggest",
+      key: "chats_from_autosuggest_count" as const,
+    },
+    { label: "Chats from user", key: "chats_from_user_count" as const },
+    { label: "Chats from visitor", key: "chats_from_visitor_count" as const },
+    { label: "Conversation", key: "conversation_count" as const },
+    { label: "Missed chat", key: "missed_chat_count" as const },
+    { label: "User message", key: "user_message_count" as const },
+    { label: "Visitor message", key: "visitor_message_count" as const },
+    {
+      label: "Visitors affected by chat",
+      key: "visitors_affected_by_chat_count" as const,
+    },
+    {
+      label: "Visitors autosuggested",
+      key: "visitors_autosuggested_count" as const,
+    },
+    { label: "Visitors with chat", key: "visitors_with_chat_count" as const },
+    {
+      label: "Visitors with conversation",
+      key: "visitors_with_conversation_count" as const,
+    },
+  ].map(({ label, key }, index) => ({
+    data: response.by_date.map((x) => ({ x: new Date(x.date), y: x[key] })),
+    label: label,
+    borderColor: colors[index % colors.length],
+    fill: false,
+    type: "line",
+  }));
+
+  return {
+    labels: response.by_date.map((x) => x.date),
+    datasets: datasets,
+  };
+}
+
 function App() {
-  const [startDate, setStartDate] = useState<moment.Moment | null>(moment('01/05/2017', 'DD/MM/YYYY'));
-  const [endDate, setEndDate] = useState<moment.Moment | null>(moment('01/05/2017', 'DD/MM/YYYY'));
+  const [startDate, setStartDate] = useState<moment.Moment | null>(
+    moment("01/05/2017", "DD/MM/YYYY")
+  );
+  const [endDate, setEndDate] = useState<moment.Moment | null>(
+    moment("01/05/2017", "DD/MM/YYYY")
+  );
   const [token, setToken] = useState<string | undefined>();
   const [response, setResponse] = useState<response>();
   const [focusedInput, setFocusedInput] = useState<
@@ -82,21 +161,20 @@ function App() {
             endDateAriaLabel={"end date"}
             orientation={"horizontal"}
             keepOpenOnDateSelect={false}
-            minDate={moment('01/01/1999', 'DD/MM/YYYY')}
+            minDate={moment("01/01/1999", "DD/MM/YYYY")}
             isOutsideRange={() => false}
           />
         </div>
         <div className="tokenBox">
-            <div className="tokenImage">
-                <img alt="image" src={userImage}/>
-            </div>
-            <input
+          <div className="tokenImage">
+            <img alt="image" src={userImage} />
+          </div>
+          <input
             className="tokenInput"
             placeholder="Access token"
             onChange={(event) => setToken(event.target.value)}
-            ></input>
+          ></input>
         </div>
-        
       </div>
       <div className="displayBoxes">
         <div className="displayBox">
@@ -128,6 +206,30 @@ function App() {
             hideSizePerPage: true,
           })}
         />
+      )}
+
+      {response && (
+        <div className="statistics">
+          <div className="statisticsText"><img alt="graph-image" src={graphImage} /> Graph</div>
+          <Line
+            data={responseToLineData(response)}
+            options={{
+              scales: {
+                displayFormats: {
+                  millisecond: "DD.MM.YYYY",
+                  second: "DD.MM.YYYY",
+                  minute: "DD.MM.YYYY",
+                  hour: "DD.MM.YYYY",
+                  day: "DD.MM.YYYY",
+                  week: "DD.MM.YYYY",
+                  month: "DD.MM.YYYY",
+                  quarter: "DD.MM.YYYY",
+                  year: "DD.MM.YYYY",
+                },
+              },
+            }}
+          />
+        </div>
       )}
     </div>
   );

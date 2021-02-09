@@ -94,15 +94,17 @@
   padding: 15px;
 }
 
-.App-link {
-  color: #61dafb;
+.statistics img {
+  width: 40px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.statistics {
+  margin: 0px auto;
+}
+
+.statisticsText {
+  float: left;
+  margin-left: 20px;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
