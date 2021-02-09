@@ -15,6 +15,7 @@ import userImage from "./images/user.svg";
 import graphImage from "./images/graph.svg";
 import * as chartjs from "chart.js";
 import { Line, ChartData } from "react-chartjs-2";
+import { start } from "repl";
 
 const columns = [
   {
@@ -37,37 +38,37 @@ const columns = [
 ];
 
 const colors = [
-    "#3366cc",
-    "#dc3912",
-    "#ff9900",
-    "#109618",
-    "#990099",
-    "#0099c6",
-    "#dd4477",
-    "#66aa00",
-    "#b82e2e",
-    "#316395",
-    "#994499",
-    "#22aa99",
-    "#aaaa11",
-    "#6633cc",
-    "#e67300",
-    "#8b0707",
-    "#651067",
-    "#329262",
-    "#5574a6",
-    "#3b3eac",
-    "#b77322",
-    "#16d620",
-    "#b91383",
-    "#f4359e",
-    "#9c5935",
-    "#a9c413",
-    "#2a778d",
-    "#668d1c",
-    "#bea413",
-    "#0c5922",
-    "#743411",
+  "#3366cc",
+  "#dc3912",
+  "#ff9900",
+  "#109618",
+  "#990099",
+  "#0099c6",
+  "#dd4477",
+  "#66aa00",
+  "#b82e2e",
+  "#316395",
+  "#994499",
+  "#22aa99",
+  "#aaaa11",
+  "#6633cc",
+  "#e67300",
+  "#8b0707",
+  "#651067",
+  "#329262",
+  "#5574a6",
+  "#3b3eac",
+  "#b77322",
+  "#16d620",
+  "#b91383",
+  "#f4359e",
+  "#9c5935",
+  "#a9c413",
+  "#2a778d",
+  "#668d1c",
+  "#bea413",
+  "#0c5922",
+  "#743411",
 ];
 
 function responseToLineData(response: response): ChartData<chartjs.ChartData> {
@@ -110,20 +111,33 @@ function responseToLineData(response: response): ChartData<chartjs.ChartData> {
 }
 
 function App() {
-  const [startDate, setStartDate] = useState<moment.Moment | null>(
-    moment("01/05/2017", "DD/MM/YYYY")
-  );
-  const [endDate, setEndDate] = useState<moment.Moment | null>(
-    moment("01/05/2017", "DD/MM/YYYY")
-  );
-  const [token, setToken] = useState<string | undefined>();
+  const [startDate, setStartDate] = useState<moment.Moment | null>(moment("01/05/2017", "DD/MM/YYYY"));
+  const [endDate, setEndDate] = useState<moment.Moment | null>(moment("01/05/2017", "DD/MM/YYYY"));
+  const [token, setToken] = useState<string | undefined>(localStorage.getItem("token") || undefined);
   const [response, setResponse] = useState<response>();
   const [focusedInput, setFocusedInput] = useState<
     "startDate" | "endDate" | null
   >("startDate");
 
+    useEffect(() => {
+      const start = localStorage.getItem("startDate")
+      const end = localStorage.getItem("endDate")
+      if (start) {
+        setStartDate(moment(start));
+      }
+
+      if ( end ) {
+        setEndDate(moment(end));
+      }
+
+    }, [])
+
   useEffect(() => {
     if (startDate && endDate && token) {
+      localStorage.setItem("startDate", startDate.toISOString());
+      localStorage.setItem("endDate", endDate.toISOString());
+      localStorage.setItem("token", token);
+
       fetch(
         `https://api.giosg.com/api/reporting/v1/rooms/84e0fefa-5675-11e7-a349-00163efdd8db/chat-stats/daily/?start_date=${formatDate(
           startDate.toDate()
@@ -172,6 +186,7 @@ function App() {
           <input
             className="tokenInput"
             placeholder="Access token"
+            value={token}
             onChange={(event) => setToken(event.target.value)}
           ></input>
         </div>
@@ -210,7 +225,9 @@ function App() {
 
       {response && (
         <div className="statistics">
-          <div className="statisticsText"><img alt="graph-image" src={graphImage} /> Graph</div>
+          <div className="statisticsText">
+            <img alt="graph-image" src={graphImage} /> Graph
+          </div>
           <Line
             data={responseToLineData(response)}
             options={{

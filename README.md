@@ -1,42 +1,34 @@
-# Getting Started with Create React App
+#  API Front-end App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This application fetches numbers from reporting API and shows totals for time range on top of the page, daily numbers on middle table, and statistics graph in the below of the page. 
 
-## Available Scripts
+## Demo
+The application is running in AWS S3, and it is available at
+.
 
-In the project directory, you can run:
 
-### `REACT_APP_TOKEN={token} npm start`
+## Run locally
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+npm install
+npm start
+```
 
-Getting HTTP request requires authorization token and token should be passed when starting an application.
+Before `npm start`, `npm install` should be done first to install dependant packages. Once `npm start` is executed successfully, application is running in http://localhost:3000.
 
-### `npm test`
+## Used libraries
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- react-bootstrap-table-next
+- react-dates
+- chart.js
+- react-chartjs-2
+- All the icons were imported from https://www.flaticon.com/
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Things to know
+- To access reporting API, authorization token should be input in "access token" field.
+- If you click on the title of the graph legend, you can activate/deactivate showing a certain graph.
+- Table can be sorted according to Date by clicking the arrow next to table title Date
+- If you come back to application later time, start date, end date and tokens that you typed as last are populated.
 
 ## Learn More
 
