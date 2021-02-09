@@ -1,4 +1,4 @@
-export type date_data = {
+export type ChatStatisticsByDate = {
     chats_from_autosuggest_count: number
     chats_from_user_count: number
     chats_from_visitor_count: number
@@ -13,8 +13,8 @@ export type date_data = {
     visitors_with_conversation_count: number
 }
 
-export type response = {
-    by_date: date_data[]
+export type ChatStatistics = {
+    by_date: ChatStatisticsByDate[]
     end_date: string
     room_id: string
     start_date: string
