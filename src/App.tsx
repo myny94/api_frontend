@@ -26,6 +26,7 @@ function App() {
   const [focusedInput, setFocusedInput] = useState<
     "startDate" | "endDate" | null
   >(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const start = localStorage.getItem("startDate");
@@ -37,10 +38,13 @@ function App() {
     if (end) {
       setEndDate(moment(end));
     }
+
+    setLoaded(true);
+
   }, []);
 
   useEffect(() => {
-    if (startDate && endDate && token && token.length > 0) {
+    if (loaded && startDate && endDate && token && token.length > 0) {
       localStorage.setItem("startDate", startDate.toISOString());
       localStorage.setItem("endDate", endDate.toISOString());
       localStorage.setItem("token", token);
@@ -49,7 +53,7 @@ function App() {
         setResponse(data)
       );
     }
-  }, [startDate, endDate, token]);
+  }, [startDate, endDate, token, loaded]);
 
   return (
     <div className="App">
