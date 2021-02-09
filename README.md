@@ -3,8 +3,7 @@
 This application fetches numbers from reporting API and shows totals for time range on top of the page, daily numbers on middle table, and statistics graph in the below of the page. 
 
 ## Demo
-The application is running in AWS S3, and it is available at
-.
+The application is running in AWS S3, and it is available at http://frontendapi.s3-website.eu-north-1.amazonaws.com/.
 
 
 ## Run locally
